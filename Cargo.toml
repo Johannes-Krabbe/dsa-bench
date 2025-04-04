@@ -1,0 +1,14 @@
+[package]
+name = "dsa-bench"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+ml-dsa = "0.1.0-pre.2"
+hybrid-array = { version = "0.2.3", features = ["extra-sizes"] }
+rand = "0.9"
+
+[[bench]]
+name = "mldsa_bench"
+harness = false
