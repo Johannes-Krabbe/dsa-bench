@@ -1,4 +1,4 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use hybrid_array::{Array, ArraySize};
 use ml_dsa::{KeyGen, MlDsa65, B32};
 use rand::CryptoRng;
@@ -29,6 +29,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     group.bench_function("keygen", |b| {
         b.iter(|| {
             let _kp = MlDsa65::key_gen_internal(&xi);
+            black_box(_kp);
         })
     });
 
@@ -36,6 +37,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     group.bench_function("sign", |b| {
         b.iter(|| {
             let _sig = sk.sign_deterministic(&m, &ctx);
+            black_box(_sig);
         })
     });
 
@@ -43,6 +45,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     group.bench_function("verify", |b| {
         b.iter(|| {
             let _ver = vk.verify_with_context(&m, &ctx, &sig);
+            black_box(_ver);
         })
     });
 
@@ -52,17 +55,9 @@ fn criterion_benchmark(c: &mut Criterion) {
             let kp = MlDsa65::key_gen_internal(&xi);
             let sig = kp.signing_key().sign_deterministic(&m, &ctx).unwrap();
             let _ver = kp.verifying_key().verify_with_context(&m, &ctx, &sig);
-        })
-    });
-
-    // Combined operations (explicit steps)
-    group.bench_function("combined_explicit_steps", |b| {
-        b.iter(|| {
-            let kp = MlDsa65::key_gen_internal(&xi);
-            let sk = kp.signing_key();
-            let vk = kp.verifying_key();
-            let sig = sk.sign_deterministic(&m, &ctx).unwrap();
-            let _ver = vk.verify_with_context(&m, &ctx, &sig);
+            black_box(_ver);
+            black_box(sig);
+            black_box(kp);
         })
     });
 
