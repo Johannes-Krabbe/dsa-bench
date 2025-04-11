@@ -10,9 +10,13 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     let mut rng = rand::thread_rng();
 
+    let mut message = [0u8; 128];
+    for i in 0..message.len() {
+        message[i] = (i % 256) as u8;
+    }
+
     let sk = SigningKey::<Shake256s>::new(&mut rng);
-    let msg = b"Hello, world!";
-    let sig = sk.try_sign(msg).unwrap();
+    let sig = sk.try_sign(&message).unwrap();
     let vk = sk.verifying_key();
 
     // Key generation
@@ -26,7 +30,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     // Signing
     group.bench_function("sign", |b| {
         b.iter(|| {
-            let sig = sk.try_sign(msg).unwrap();
+            let sig = sk.try_sign(&message).unwrap();
             black_box(sig)
         })
     });
@@ -34,7 +38,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     // Verifying
     group.bench_function("verify", |b| {
         b.iter(|| {
-            let ok = vk.verify(msg, &sig);
+            let ok = vk.verify(&message, &sig);
             black_box(ok)
         })
     });
@@ -43,9 +47,9 @@ fn criterion_benchmark(c: &mut Criterion) {
     group.bench_function("round_trip", |b| {
         b.iter(|| {
             let key = slh_dsa::SigningKey::<Shake256s>::new(&mut rng);
-            let sig = key.try_sign(msg).unwrap();
+            let sig = key.try_sign(&message).unwrap();
             let vk = key.verifying_key();
-            let ok = vk.verify(msg, &sig);
+            let ok = vk.verify(&message, &sig);
             let _ = black_box(ok);
         })
     });
