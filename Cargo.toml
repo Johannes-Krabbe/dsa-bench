@@ -10,5 +10,13 @@ hybrid-array = { version = "0.2.3", features = ["extra-sizes"] }
 rand = "0.9"
 
 [[bench]]
-name = "mldsa_bench"
+name = "mldsa_44_bench"
+harness = false
+
+[[bench]]
+name = "mldsa_65_bench"
+harness = false
+
+[[bench]]
+name = "mldsa_87_bench"
 harness = false
