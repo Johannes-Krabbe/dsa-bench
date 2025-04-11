@@ -10,5 +10,25 @@ signature = "=2.3.0-pre.4"
 rand = "=0.8.5"
 
 [[bench]]
-name = "slhdsa_bench"
+name = "slhdsa_128f_bench"
+harness = false
+
+[[bench]]
+name = "slhdsa_128s_bench"
+harness = false
+
+[[bench]]
+name = "slhdsa_192f_bench"
+harness = false
+
+[[bench]]
+name = "slhdsa_192s_bench"
+harness = false
+
+[[bench]]
+name = "slhdsa_256f_bench"
+harness = false
+
+[[bench]]
+name = "slhdsa_256s_bench"
 harness = false

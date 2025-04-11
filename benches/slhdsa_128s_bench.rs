@@ -3,13 +3,14 @@ use signature::*;
 use slh_dsa::*;
 
 fn criterion_benchmark(c: &mut Criterion) {
-    let mut group = c.benchmark_group("slh_dsa");
-    group.sample_size(1000);
+    let mut group = c.benchmark_group("slh_dsa_128s");
+    group.sample_size(100);
     group.sampling_mode(criterion::SamplingMode::Flat);
+    group.measurement_time(std::time::Duration::new(120, 0));
 
     let mut rng = rand::thread_rng();
 
-    let sk = SigningKey::<Shake128f>::new(&mut rng);
+    let sk = SigningKey::<Shake128s>::new(&mut rng);
     let msg = b"Hello, world!";
     let sig = sk.try_sign(msg).unwrap();
     let vk = sk.verifying_key();
@@ -17,7 +18,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     // Key generation
     group.bench_function("keygen", |b| {
         b.iter(|| {
-            let key = slh_dsa::SigningKey::<Shake128f>::new(&mut rng);
+            let key = slh_dsa::SigningKey::<Shake128s>::new(&mut rng);
             black_box(key);
         })
     });
@@ -41,7 +42,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     // Round trip
     group.bench_function("round_trip", |b| {
         b.iter(|| {
-            let key = slh_dsa::SigningKey::<Shake128f>::new(&mut rng);
+            let key = slh_dsa::SigningKey::<Shake128s>::new(&mut rng);
             let sig = key.try_sign(msg).unwrap();
             let vk = key.verifying_key();
             let ok = vk.verify(msg, &sig);

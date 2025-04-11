@@ -1,0 +1,57 @@
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use signature::*;
+use slh_dsa::*;
+
+fn criterion_benchmark(c: &mut Criterion) {
+    let mut group = c.benchmark_group("slh_dsa_256f");
+    group.sample_size(100);
+    group.sampling_mode(criterion::SamplingMode::Flat);
+    group.measurement_time(std::time::Duration::new(120, 0));
+
+    let mut rng = rand::thread_rng();
+
+    let sk = SigningKey::<Shake256f>::new(&mut rng);
+    let msg = b"Hello, world!";
+    let sig = sk.try_sign(msg).unwrap();
+    let vk = sk.verifying_key();
+
+    // Key generation
+    group.bench_function("keygen", |b| {
+        b.iter(|| {
+            let key = slh_dsa::SigningKey::<Shake256f>::new(&mut rng);
+            black_box(key);
+        })
+    });
+
+    // Signing
+    group.bench_function("sign", |b| {
+        b.iter(|| {
+            let sig = sk.try_sign(msg).unwrap();
+            black_box(sig)
+        })
+    });
+
+    // Verifying
+    group.bench_function("verify", |b| {
+        b.iter(|| {
+            let ok = vk.verify(msg, &sig);
+            black_box(ok)
+        })
+    });
+
+    // Round trip
+    group.bench_function("round_trip", |b| {
+        b.iter(|| {
+            let key = slh_dsa::SigningKey::<Shake256f>::new(&mut rng);
+            let sig = key.try_sign(msg).unwrap();
+            let vk = key.verifying_key();
+            let ok = vk.verify(msg, &sig);
+            let _ = black_box(ok);
+        })
+    });
+
+    group.finish();
+}
+
+criterion_group!(benches, criterion_benchmark);
+criterion_main!(benches);
