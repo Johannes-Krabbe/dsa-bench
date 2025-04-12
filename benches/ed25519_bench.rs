@@ -4,9 +4,9 @@ use rand::rngs::OsRng;
 
 fn criterion_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("ed25519");
-    group.sample_size(100);
+    group.sample_size(500);
     group.sampling_mode(criterion::SamplingMode::Flat);
-    group.measurement_time(std::time::Duration::new(120, 0));
+    group.measurement_time(std::time::Duration::new(600, 0));
 
     let mut message = [0u8; 128];
     for i in 0..message.len() {
