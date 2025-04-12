@@ -1,9 +1,12 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use ed25519_dalek::{Signature, Signer, SigningKey, Verifier, VerifyingKey};
-use rand::rngs::OsRng;
+use p256::ecdsa::{
+    signature::{Signer, Verifier},
+    Signature, SigningKey, VerifyingKey,
+};
+use rand_core::OsRng;
 
 fn criterion_benchmark(c: &mut Criterion) {
-    let mut group = c.benchmark_group("ed25519");
+    let mut group = c.benchmark_group("ecdsa_p256");
     group.sample_size(100);
     group.sampling_mode(criterion::SamplingMode::Flat);
     group.measurement_time(std::time::Duration::new(120, 0));
@@ -15,12 +18,12 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     group.bench_function("keygen", |b| {
         b.iter(|| {
-            let signing_key = SigningKey::generate(&mut OsRng);
+            let signing_key = SigningKey::random(&mut OsRng);
             black_box(signing_key);
         })
     });
 
-    let signing_key = SigningKey::generate(&mut OsRng);
+    let signing_key = SigningKey::random(&mut OsRng);
     let verifying_key = VerifyingKey::from(&signing_key);
 
     group.bench_function("sign", |b| {
@@ -41,7 +44,7 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     group.bench_function("round_trip", |b| {
         b.iter(|| {
-            let signing_key = SigningKey::generate(&mut OsRng);
+            let signing_key = SigningKey::random(&mut OsRng);
             let verifying_key = VerifyingKey::from(&signing_key);
 
             let signature: Signature = signing_key.sign(&message);

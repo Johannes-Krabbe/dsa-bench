@@ -5,14 +5,23 @@ edition = "2021"
 
 [dependencies]
 criterion = "0.5"
-ecdsa = "0.16.9"
 ed25519-dalek = { version = "2.0.0", features = ["rand_core"] } 
-p256 = "0.13.2"
+p256 = { version = "0.13.2", features = ["ecdsa"] }
+p384 = { version = "0.13.1", features = ["ecdsa"] }
+p521 = { version = "0.13.3", features = ["ecdsa"] }
 rand = "0.8.0"
 rand_core = "0.6.4"
 
 [[bench]]
-name = "ecdsa_bench"
+name = "ecdsa_p256_bench"
+harness = false
+
+[[bench]]
+name = "ecdsa_p384_bench"
+harness = false
+
+[[bench]]
+name = "ecdsa_p521_bench"
 harness = false
 
 
