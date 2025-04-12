@@ -5,8 +5,8 @@ edition = "2021"
 
 [dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
-ml-dsa = "0.1.0-pre.2"
-hybrid-array = { version = "0.2.3", features = ["extra-sizes"] }
+ml-dsa = "0.0.4"
+hybrid-array = { version = "0.3", features = ["extra-sizes"] }
 rand = "0.9"
 
 [[bench]]
