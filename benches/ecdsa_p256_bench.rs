@@ -3,18 +3,20 @@ use p256::ecdsa::{
     signature::{Signer, Verifier},
     Signature, SigningKey, VerifyingKey,
 };
+use rand::seq::SliceRandom;
 use rand_core::OsRng;
 
 fn criterion_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("ecdsa_p256");
-    group.sample_size(500);
+    group.sample_size(10);
     group.sampling_mode(criterion::SamplingMode::Flat);
-    group.measurement_time(std::time::Duration::new(600, 0));
+    group.measurement_time(std::time::Duration::new(30, 0));
 
     let mut message = [0u8; 128];
     for i in 0..message.len() {
         message[i] = (i % 256) as u8;
-    }
+    }    
+    message.shuffle(&mut OsRng);
 
     group.bench_function("keygen", |b| {
         b.iter(|| {

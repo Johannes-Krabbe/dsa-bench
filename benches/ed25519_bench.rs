@@ -1,17 +1,18 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use ed25519_dalek::{Signature, Signer, SigningKey, Verifier, VerifyingKey};
-use rand::rngs::OsRng;
+use rand::{rngs::OsRng, seq::SliceRandom};
 
 fn criterion_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("ed25519");
-    group.sample_size(500);
+    group.sample_size(10);
     group.sampling_mode(criterion::SamplingMode::Flat);
-    group.measurement_time(std::time::Duration::new(600, 0));
+    group.measurement_time(std::time::Duration::new(30, 0));
 
     let mut message = [0u8; 128];
     for i in 0..message.len() {
         message[i] = (i % 256) as u8;
     }
+    message.shuffle(&mut OsRng);
 
     group.bench_function("keygen", |b| {
         b.iter(|| {
