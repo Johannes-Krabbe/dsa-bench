@@ -5,9 +5,9 @@ use slh_dsa::*;
 
 fn criterion_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("slh_dsa_128s");
-    group.sample_size(100);
+    group.sample_size(10);
     group.sampling_mode(criterion::SamplingMode::Flat);
-    group.measurement_time(std::time::Duration::new(120, 0));
+    group.measurement_time(std::time::Duration::new(30, 0));
 
     let mut rng = rand::thread_rng();
 
