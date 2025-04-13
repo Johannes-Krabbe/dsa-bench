@@ -8,7 +8,7 @@ use rand_core::OsRng;
 
 fn criterion_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("ecdsa_p521");
-    group.sample_size(10);
+    group.sample_size(100);
     group.sampling_mode(criterion::SamplingMode::Flat);
     group.measurement_time(std::time::Duration::new(30, 0));
 
